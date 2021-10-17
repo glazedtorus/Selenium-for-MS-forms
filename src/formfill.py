@@ -23,12 +23,5 @@ def fill():
     submit = driver.find_elements_by_css_selector('.button-content')
     submit[1].click()
 
-def rightSite():
-    if "2021" in driver.title:
-        return True
-        fill()
-    else:
-        return False
-rightSite()
 
 driver.quit()
