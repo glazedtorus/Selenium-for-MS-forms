@@ -1,36 +1,50 @@
-import os
-import json
-import selenium
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from time import sleep
+from json import *
 
-driver = webdriver.Chrome(executable_path=r'o=your path here')
-driver.get("your form here")
+driver = webdriver.Chrome(executable_path=r'path')
+driver.get("form")
+
+with open('password.pw', 'r') as f:
+    stuff = f.read().split('\n')
+    EMAIL = stuff[0]
+    PW = stuff[1]
 
 def fill():
-    for i in  range(1,6):
-        radiobuttons = driver.find_elements_by_css_selector("input[type='radio'][value='No']")
-        radiobuttons[i].click()
-
-    button6 = driver.find_element_by_css_selector("input[type='radio'][aria-checked='false'][value='Yes']")
-    button6.click()
-
-    for x in range(1,4):
-        lastbuttons = driver.find_elements_by_css_selector("input[type='radio'][value='No']")
-        lastbuttons[x].click()
-
-    button10 = driver.find_element_by_css_selector("input[type='radio'][aria-checked='false'][value=' ']")
-    button10.click()
-
-    submit = driver.find_elements_by_css_selector('.button-content')
-    submit[1].click()
+    try:
+        elem = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.NAME, "loginfmt"))
+        )
+    finally:
+        emil = driver.find_element('name','loginfmt')
+        emil.send_keys(EMAIL)
+        btn = driver.find_element('id','idSIButton9')
+        btn.click()
+    try:
+        elem = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.NAME, "passwd"))
+        )
+    finally:
+        pw = driver.find_element('name', 'passwd')
+        pw.send_keys(PW)
+        sleep(1)
+        btn2 = driver.find_element('id','idSIButton9')
+        btn2.click()
+    driver.back()
+fill()
 
 def rightSite():
-    if "2021" in driver.title:
-        return True
-        fill()
-    else:
-        return False
+    try:
+        if "2021" in driver.title:
+            fill()
+            return True
+        else:
+            return False
+    except:
+        raise Exception("Did not reach site. Try again.")
 rightSite()
 
 
