@@ -8,32 +8,52 @@ from json import *
 driver = webdriver.Chrome(executable_path=r'path')
 driver.get("form")
 
-with open('password.pw', 'r') as f:
-    stuff = f.read().split('\n')
+with open('password.pw', 'r') as login:
+    stuff = login.read().split('\n')
     EMAIL = stuff[0]
     PW = stuff[1]
 
 def fill():
-    try:
         elem = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.NAME, "loginfmt"))
         )
-    finally:
         emil = driver.find_element('name','loginfmt')
         emil.send_keys(EMAIL)
         btn = driver.find_element('id','idSIButton9')
         btn.click()
-    try:
+
         elem = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.NAME, "passwd"))
         )
-    finally:
         pw = driver.find_element('name', 'passwd')
         pw.send_keys(PW)
         sleep(1)
+
         btn2 = driver.find_element('id','idSIButton9')
         btn2.click()
-    driver.back()
+        driver.back()
+        
+        elem = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "text-format-content"))
+        )
+
+        questions = 'something'
+        num = 1
+        while questions:
+            num += 1
+            if num == 7:
+                questions = driver.find_element(By.XPATH,'/html/body/div/div/div/div/div[1]/div/div[1]/div[2]/div[2]/div[7]/div/div[2]/div/div[2]')
+                questions.click()
+            try:
+                questions = driver.find_element(By.XPATH,f'/html/body/div/div/div/div/div[1]/div/div[1]/div[2]/div[2]/div[{num}]/div/div[2]/div/div[1]')
+                questions.click()
+            except:
+                questions = ''
+            
+        try:
+            driver.find_element(By.XPATH,'/html/body/div/div/div/div/div[1]/div/div[1]/div[2]/div[3]/div[1]/button/div').click()
+        except:
+            raise Exception("Something went wrong. Ensure your password is in password.pw") 
 fill()
 
 def rightSite():
@@ -46,6 +66,5 @@ def rightSite():
     except:
         raise Exception("Did not reach site. Try again.")
 rightSite()
-
 
 driver.quit()
