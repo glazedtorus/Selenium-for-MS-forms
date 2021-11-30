@@ -5,13 +5,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 from json import *
+from webdriver_manager.chrome import ChromeDriverManager
 
-#setting selenium webdriver executable path
-driver = webdriver.Chrome(executable_path=r'path')
-driver.get("form")
+#getting chromedriver from webdriverpackage-manager 
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("site")
 
 #login credentials
-with open('password.pw', 'r') as login:
+with open(r"login.file", 'r') as login:
     stuff = login.read().split('\n')
     EMAIL = stuff[0]
     PW = stuff[1]
@@ -37,7 +38,7 @@ def fill():
         EC.presence_of_element_located((By.CLASS_NAME, "text-format-content"))
         )
 
-        questions = 'n'
+        questions = 'sum'
         num = 1
         while questions:
             num += 1
@@ -54,17 +55,8 @@ def fill():
             driver.find_element(By.XPATH,'/html/body/div/div/div/div/div[1]/div/div[1]/div[2]/div[3]/div[1]/button/div').click()
         except:
             raise Exception("Something went wrong. Ensure your password is in password.pw") 
+        sleep(5)
+        print("Completed successfully")
 fill()
-
-def rightSite():
-    try:
-        if "2021" in driver.title:
-            fill()
-            return True
-        else:
-            return False
-    except:
-        raise Exception("Did not reach site. Try again.")
-rightSite()
 
 driver.quit()
