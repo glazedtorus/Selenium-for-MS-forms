@@ -5,7 +5,6 @@ WAIT="24 hours"
 process_started=false
 tmp_pid=0
 
-# For starting a detached process
 startProcess() { 
     ./formfill.py &>/dev/null &
     tmp_pid=$(echo $!)
@@ -25,13 +24,8 @@ do
       wait ${tmp_pid}
       if [ $? -eq 0 ]; then
        echo "Script exited normal: " $(date +'%d-%m-%y %H:%M:%S')" . Waiting another $WAIT"
-        # Process has been exited normally.
-        # Resetting the trigger.
-        TRIGGER=$(date +'%d-%m-%y-%H-%M' -d "$WAIT")
-        echo "New run in $WAIT: $TRIGGER"
       else
         echo "Script exited with an error"
-        # Here. e. g. Start the script again
         startProcess
         echo "Retarted script: "  $(date +'%d-%m-%y %H:%M:%S') " (PID $tmp_pid)"
       fi
